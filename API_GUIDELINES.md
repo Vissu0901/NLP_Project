@@ -1,7 +1,7 @@
-# NLP Arithmetic API Documentation
+# Chatbot API with Arithmetic Capabilities
 
 ## Overview
-This API provides natural language processing capabilities for performing arithmetic operations. Users can send queries in natural language or simple arithmetic expressions, and the API will process them to return the calculated results.
+This API provides a conversational chatbot that can engage in general conversation and perform arithmetic operations when requested. The chatbot can recognize different types of user intents and respond appropriately, making it versatile for both casual chat and calculations.
 
 ## Base URL
 ```
@@ -17,151 +17,134 @@ https://your-domain.com/api/
 - **Response Example**:
 ```json
 {
-    "message": "Welcome to the NLP Arithmetic API",
+    "message": "Welcome to the Chatbot API with Arithmetic Capabilities",
     "usage": {
-        "endpoint": "/api/calculate/",
+        "endpoint": "/api/chat/",
         "method": "POST",
         "body": {
-            "query": "Your arithmetic question here"
+            "message": "Your message here"
         },
         "examples": [
+            "Hello!",
+            "What can you do?",
             "What is the sum of 5 and 3?",
             "multiply six and four",
-            "5 plus 3",
-            "difference between ten and seven"
+            "How are you today?"
         ]
     }
 }
 ```
 
-### 2. Calculate Endpoint
-- **URL**: `/calculate/`
+### 2. Chat Endpoint
+- **URL**: `/chat/`
 - **Method**: `POST`
-- **Description**: Processes arithmetic queries in natural language
+- **Description**: Handles both general conversation and arithmetic calculations
 - **Request Body**:
 ```json
 {
-    "query": "string"
+    "message": "string"
 }
 ```
 
 #### Example Requests
 
-1. **Addition**
+1. **Greeting**
 ```json
 {
-    "query": "What is the sum of five and three?"
+    "message": "Hello!"
 }
 ```
 
-2. **Multiplication**
+2. **Arithmetic Query**
 ```json
 {
-    "query": "multiply 6 and 4"
+    "message": "What is the sum of five and three?"
 }
 ```
 
-3. **Subtraction**
+3. **Capabilities Question**
 ```json
 {
-    "query": "difference between ten and seven"
+    "message": "What can you do?"
 }
 ```
 
-4. **Division**
+4. **General Chat**
 ```json
 {
-    "query": "divide twenty by five"
+    "message": "How are you today?"
 }
 ```
 
 #### Response Format
+For Arithmetic Calculations:
 ```json
 {
-    "result": number,
-    "operation": string,
-    "numbers": array
+    "type": "calculation",
+    "message": "I calculated that for you! The result is 8",
+    "details": {
+        "result": 8,
+        "operation": "+",
+        "numbers": [5, 3]
+    }
 }
 ```
 
-#### Example Response
+For Chat Responses:
 ```json
 {
-    "result": 8,
-    "operation": "+",
-    "numbers": [5, 3]
+    "type": "chat",
+    "message": "Hello! I'm your friendly chat assistant. I can help you with calculations and chat about various topics. What's on your mind?"
 }
 ```
 
-#### Error Response
+For Errors:
 ```json
 {
-    "error": "Error message description"
+    "type": "error",
+    "message": "Error message description"
 }
 ```
 
-## Supported Operations
+## Supported Features
 
-### 1. Addition
-- Keywords: "sum", "add", "plus", "addition"
-- Example: "What is the sum of 5 and 3?"
+### 1. General Chat
+- Greetings and farewells
+- Questions about bot capabilities
+- General conversation responses
 
-### 2. Subtraction
-- Keywords: "minus", "subtract", "subtraction", "difference"
-- Example: "What is the difference between 10 and 7?"
+### 2. Arithmetic Operations
+- Addition: "sum", "add", "plus"
+- Subtraction: "minus", "subtract", "difference"
+- Multiplication: "multiply", "times"
+- Division: "divide"
 
-### 3. Multiplication
-- Keywords: "multiply", "multiplication", "times"
-- Example: "multiply six and four"
-
-### 4. Division
-- Keywords: "divide", "division"
-- Example: "divide twenty by five"
-
-## Number Format Support
-The API supports both:
+### 3. Number Format Support
 - Numeric numbers (e.g., "5", "10", "100")
 - Word numbers (e.g., "five", "ten", "hundred")
 
 ## Error Handling
 
 ### Common Error Cases
-1. Missing Query
+1. Missing Message
 ```json
 {
-    "error": "Please provide a query"
+    "error": "Please provide a message"
 }
 ```
 
-2. Invalid Operation
+2. Calculation Errors
 ```json
 {
-    "error": "Could not identify the arithmetic operation"
+    "type": "error",
+    "message": "I encountered an error while calculating: Could not identify the arithmetic operation"
 }
 ```
-
-3. Insufficient Numbers
-```json
-{
-    "error": "Could not identify enough numbers in the query"
-}
-```
-
-4. Division by Zero
-```json
-{
-    "error": "Division by zero is not allowed"
-}
-```
-
-## Rate Limiting
-- Default rate limit: 100 requests per minute per IP
-- Status code 429 will be returned if rate limit is exceeded
 
 ## Best Practices
-1. Always send queries in a clear, concise format
-2. Include numbers and operations in a natural sentence structure
-3. Verify the response format and handle potential errors
+1. Send clear, concise messages
+2. For calculations, include numbers and operations in a natural sentence structure
+3. Handle different response types (chat, calculation, error) appropriately
 4. Implement proper error handling in your client application
 
 ## Example Code
@@ -170,12 +153,12 @@ The API supports both:
 ```python
 import requests
 
-url = "https://your-domain.com/api/calculate/"
+url = "https://your-domain.com/api/chat/"
 headers = {
     "Content-Type": "application/json"
 }
 data = {
-    "query": "What is the sum of five and three?"
+    "message": "What is the sum of five and three?"
 }
 
 response = requests.post(url, json=data, headers=headers)
@@ -185,13 +168,13 @@ print(result)
 
 ### JavaScript
 ```javascript
-fetch('https://your-domain.com/api/calculate/', {
+fetch('https://your-domain.com/api/chat/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-        query: 'What is the sum of five and three?'
+        message: 'What is the sum of five and three?'
     })
 })
 .then(response => response.json())

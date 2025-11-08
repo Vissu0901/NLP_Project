@@ -1,31 +1,31 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .utils import process_arithmetic_query
+from .chatbot import ChatBot
+
+# Initialize the chatbot
+chatbot = ChatBot()
 
 @api_view(['POST'])
-def calculate(request):
+def chat(request):
     """
-    Process natural language arithmetic queries.
+    Chat endpoint that handles both general conversation and arithmetic calculations.
     Example inputs:
+    - "Hello!"
+    - "What can you do?"
     - "What is the sum of 5 and 3?"
-    - "multiply six and four"
-    - "5 plus 3"
-    - "difference between ten and seven"
+    - "How are you today?"
     """
     try:
-        query = request.data.get('query', '')
-        if not query:
+        message = request.data.get('message', '')
+        if not message:
             return Response(
-                {"error": "Please provide a query"},
+                {"error": "Please provide a message"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        result = process_arithmetic_query(query)
-        if "error" in result:
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(result, status=status.HTTP_200_OK)
+        response = chatbot.generate_response(message)
+        return Response(response, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response(
@@ -36,18 +36,19 @@ def calculate(request):
 @api_view(['GET'])
 def api_root(request):
     return Response({
-        "message": "Welcome to the NLP Arithmetic API",
+        "message": "Welcome to the Chatbot API with Arithmetic Capabilities",
         "usage": {
-            "endpoint": "/api/calculate/",
+            "endpoint": "/api/chat/",
             "method": "POST",
             "body": {
-                "query": "Your arithmetic question here"
+                "message": "Your message here"
             },
             "examples": [
+                "Hello!",
+                "What can you do?",
                 "What is the sum of 5 and 3?",
                 "multiply six and four",
-                "5 plus 3",
-                "difference between ten and seven"
+                "How are you today?"
             ]
         }
     })
